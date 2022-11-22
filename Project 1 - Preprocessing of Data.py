@@ -57,3 +57,10 @@ Housing_df.dtypes #all data types are now correct, EXCEPT date (should be dateti
 Housing_df.rename(columns={"sqft_basement":"basement"})
 
 print(Housing_df) #all changes are reflected
+
+scaler = preprocessing.MinMaxScaler()
+names = Housing_df.columns
+d = scaler.fit_transform(Housing_df)
+scaled_df = pd.DataFrame(d, columns=names)
+scaled_df.head()
+
