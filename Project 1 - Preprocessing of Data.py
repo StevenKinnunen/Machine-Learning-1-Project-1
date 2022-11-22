@@ -130,3 +130,17 @@ print(f'mae: {mae}')
 print(f'mse: {mse}')
 print(f'rmse: {rmse}')
 
+
+
+# Train a classifier for different values of k - It didnt run
+results = []
+for k in range(1, 20):
+    knn = KNeighborsClassifier(n_neighbors=k).fit(X_train, y_train)
+    results.append({
+        'k': k,
+        'accuracy': accuracy_score(y_pred, knn.predict(X_test))
+    })
+    
+# Convert results to a pandas data frame
+results = pd.DataFrame(results)
+print(results)
