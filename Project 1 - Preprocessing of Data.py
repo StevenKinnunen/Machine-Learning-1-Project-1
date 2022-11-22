@@ -58,9 +58,75 @@ Housing_df.rename(columns={"sqft_basement":"basement"})
 
 print(Housing_df) #all changes are reflected
 
+#Normalize data
 scaler = preprocessing.MinMaxScaler()
 names = Housing_df.columns
 d = scaler.fit_transform(Housing_df)
 scaled_df = pd.DataFrame(d, columns=names)
 scaled_df.head()
+
+# For the regression, we need to predict another price value. To do so, we will assign price to y and all other columns to X.
+y = scaled_df['price']
+X = scaled_df.drop(['price'], axis = 1)
+
+# Descriptive statistics
+X.describe().T
+
+#Split the data into training (70%) and testing (30%)
+SEED = 42
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=SEED)
+
+#feature scaling - Double check if we need this step (if we dont run this step the error change)
+scaler = StandardScaler()
+# Fit only on X_train
+scaler.fit(X_train)
+# Scale both X_train and X_test
+X_train = scaler.transform(X_train)
+X_test = scaler.transform(X_test)
+
+#Recreate a dataframe - Idem before double check if we need this step. 
+col_names=['bedrooms', 'bathrooms', 'sqft_living', 'sqft_lot', 'floors', 'waterfront', 'view', 'condition', 'grade', 'sqft_above', 'sqft_basement', 'yr_built', 'yr_renovated', 'zipcode']
+scaled_df_2 = pd.DataFrame(X_train, columns=col_names)
+scaled_df_2.describe().T
+
+#Training and Predicting KNN Regression
+#K=5
+from sklearn.neighbors import KNeighborsRegressor
+regressor = KNeighborsRegressor(n_neighbors=5)
+regressor.fit(X_train, y_train)
+
+#Make predictions
+y_pred = regressor.predict(X_test)
+
+#Calculate error
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+mae = mean_absolute_error(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+rmse = mean_squared_error(y_test, y_pred, squared=False)
+
+print(f'mae: {mae}')
+print(f'mse: {mse}')
+print(f'rmse: {rmse}')
+
+#Training and Predicting KNN Regression
+#K=10
+from sklearn.neighbors import KNeighborsRegressor
+regressor = KNeighborsRegressor(n_neighbors=10)
+regressor.fit(X_train, y_train)
+
+#Make predictions
+y_pred = regressor.predict(X_test)
+
+
+#Calculate error
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+mae = mean_absolute_error(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+rmse = mean_squared_error(y_test, y_pred, squared=False)
+
+print(f'mae: {mae}')
+print(f'mse: {mse}')
+print(f'rmse: {rmse}')
 
