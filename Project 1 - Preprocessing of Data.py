@@ -124,6 +124,62 @@ regressionSummary (y_test, model_pred)
 
 print('Prediction rate: %.3f' % r2_score(y_test,y_predict))
 
+#Training and Predicting KNN Regression
+#K=5
+from sklearn.neighbors import KNeighborsRegressor
+regressor = KNeighborsRegressor(n_neighbors=5)
+regressor.fit(X_train, y_train)
+
+#Make predictions
+y_pred = regressor.predict(X_test)
+
+#Calculate error
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+mae = mean_absolute_error(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+rmse = mean_squared_error(y_test, y_pred, squared=False)
+
+print(f'mae: {mae}')
+print(f'mse: {mse}')
+print(f'rmse: {rmse}')
+
+#Training and Predicting KNN Regression
+#K=10
+from sklearn.neighbors import KNeighborsRegressor
+regressor = KNeighborsRegressor(n_neighbors=10)
+regressor.fit(X_train, y_train)
+
+#Make predictions
+y_pred = regressor.predict(X_test)
+
+
+#Calculate error
+from sklearn.metrics import mean_absolute_error, mean_squared_error
+
+mae = mean_absolute_error(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+rmse = mean_squared_error(y_test, y_pred, squared=False)
+
+print(f'mae: {mae}')
+print(f'mse: {mse}')
+print(f'rmse: {rmse}')
+
+
+
+# Train a classifier for different values of k - It didnt run
+results = []
+for k in range(1, 20):
+    knn = KNeighborsClassifier(n_neighbors=k).fit(X_train, y_train)
+    results.append({
+        'k': k,
+        'accuracy': accuracy_score(y_pred, knn.predict(X_test))
+    })
+    
+# Convert results to a pandas data frame
+results = pd.DataFrame(results)
+print(results)
+
 
 #trying to find the parameters for regression tree
 
