@@ -62,40 +62,47 @@ Housing_df.rename(columns={"sqft_basement":"basement"})
 
 print(Housing_df) #all changes are reflected
 
+#Grabbing all of the Numeric values
 Housing_df_numeric = Housing_df.drop(['id','date','price','zipcode','lat','long'], axis = 1)
 
+#Normalization
 scaler = preprocessing.MinMaxScaler()
 names = Housing_df_numeric.columns
 d = scaler.fit_transform(Housing_df_numeric)
 scaled_df = pd.DataFrame(d, columns=names)
 scaled_df.head()
 
+#Predictors used for Linear Regression
 predictors = ['waterfront','bedrooms','view','grade','floors']
 x = pd.get_dummies(Housing_df_numeric[predictors], drop_first=True)
 y = Housing_df['price']
 x.head()
 
+#Test/Train/Split
 X_train, X_test, y_train, y_test = train_test_split(x, y, random_state=42, train_size=0.6, shuffle=True)
 
+#Linear Regression
 model = LinearRegression()
 model.fit(X_train, y_train)
 
+#To get the number of training,testing + total
 y_predicted_training = model.predict(X_train)
 y_predicted_test = model.predict(X_test)
 print ("train size={}, test_size={}, total_size={}".format(
-    X_train.shape[0], X_test.shape[0], Housing_df_numeric.shape[0])
-)
+    X_train.shape[0], X_test.shape[0], Housing_df_numeric.shape[0]))
 
+#Prediction
 y_predict=model.predict(X_test)
 print(y_predict)
 print(y_test)
 
+#Prediction results with residuals
 model_pred = model.predict(X_test)
-
 result = pd.DataFrame({'Predicted': model_pred, 'Actual': y_test,
 'Residual': y_test - model_pred})
 print(result.head(20))
 
+#Summary + Prediction rate for the variables used
 regressionSummary (y_test, model_pred)
 
 print('Prediction rate: %.3f' % r2_score(y_test,y_predict))
