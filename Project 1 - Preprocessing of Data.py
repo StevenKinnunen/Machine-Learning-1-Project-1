@@ -6,15 +6,11 @@ import matplotlib.pylab as plt
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
-from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
-from sklearn.metrics import r2_score
+from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
 import dmba
 import statsmodels.api as sm
 from statsmodels.stats.outliers_influence import variance_inflation_factor
@@ -83,6 +79,16 @@ d = scaler.fit_transform(Housing_df_numeric)
 scaled_df = pd.DataFrame(d, columns=names)
 scaled_df.head()
 
+#Estimating feature importance
+X = scaled_df
+y = Housing_df['price']
+model = LinearRegression()
+model.fit(X, y)
+importance = model.coef_
+
+for i, v in enumerate(importance):
+    print(f"Feature {i}, Score: {v}")
+    
 #Predictors used for Linear Regression
 predictors = ['waterfront','bedrooms','view','grade','floors']
 x = pd.get_dummies(Housing_df_numeric[predictors], drop_first=True)
@@ -117,35 +123,7 @@ print(result.head(20))
 regressionSummary (y_test, model_pred)
 
 print('Prediction rate: %.3f' % r2_score(y_test,y_predict))
-=======
-#heatmap of correlation coefficients
-corr = Housing_df_numeric.corr()
-fig, ax = plt.subplots()
-fig.set_size_inches(11, 7)
-sns.heatmap(corr, annot=True, fmt=".1f", cmap="RdBu", center=0, ax=ax)
 
-#calculating variance inflation factor for each variable
-
-X = Housing_df_numeric[list(Housing_df_numeric.columns[:])]
-
-vif_info = pd.DataFrame()
-vif_info['VIF'] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
-vif_info['Column'] = X.columns
-vif_info.sort_values('VIF', ascending=False)
-
-#Estimating feature importance
-X = scaled_df
-y = Housing_df['price']
-model = LinearRegression()
-model.fit(X, y)
-importance = model.coef_
-
-for i, v in enumerate(importance):
-    print(f"Feature {i}, Score: {v}")
-    
-#splitting the data
-
-train_X, valid_X, train_y, valid_y = train_test_split(X, y, test_size=0.4, random_state=42)
 
 #trying to find the parameters for regression tree
 
