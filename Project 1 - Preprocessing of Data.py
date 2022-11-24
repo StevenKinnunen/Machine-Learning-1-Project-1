@@ -6,6 +6,10 @@ import matplotlib.pylab as plt
 import seaborn as sns
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+from sklearn.metrics import r2_score
 
 Housing_df = pd.read_csv("HousingDataSet.csv")
 
@@ -57,3 +61,41 @@ Housing_df.dtypes #all data types are now correct, EXCEPT date (should be dateti
 Housing_df.rename(columns={"sqft_basement":"basement"})
 
 print(Housing_df) #all changes are reflected
+
+Housing_df_numeric = Housing_df.drop(['id','date','price','zipcode','lat','long'], axis = 1)
+
+scaler = preprocessing.MinMaxScaler()
+names = Housing_df_numeric.columns
+d = scaler.fit_transform(Housing_df_numeric)
+scaled_df = pd.DataFrame(d, columns=names)
+scaled_df.head()
+
+predictors = ['waterfront','bedrooms','view','grade','floors']
+x = pd.get_dummies(Housing_df_numeric[predictors], drop_first=True)
+y = Housing_df['price']
+x.head()
+
+X_train, X_test, y_train, y_test = train_test_split(x, y, random_state=42, train_size=0.6, shuffle=True)
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+y_predicted_training = model.predict(X_train)
+y_predicted_test = model.predict(X_test)
+print ("train size={}, test_size={}, total_size={}".format(
+    X_train.shape[0], X_test.shape[0], Housing_df_numeric.shape[0])
+)
+
+y_predict=model.predict(X_test)
+print(y_predict)
+print(y_test)
+
+model_pred = model.predict(X_test)
+
+result = pd.DataFrame({'Predicted': model_pred, 'Actual': y_test,
+'Residual': y_test - model_pred})
+print(result.head(20))
+
+regressionSummary (y_test, model_pred)
+
+print('Prediction rate: %.3f' % r2_score(y_test,y_predict))
