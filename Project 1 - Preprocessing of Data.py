@@ -4,10 +4,10 @@ import numpy as np
 import math
 import matplotlib.pylab as plt
 import seaborn as sns
-from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.neighbors import KNeighborsRegressor
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import train_test_split, GridSearchCV
@@ -126,7 +126,6 @@ print('Prediction rate: %.3f' % r2_score(y_test,y_predict))
 
 #Training and Predicting KNN Regression
 #K=5
-from sklearn.neighbors import KNeighborsRegressor
 regressor = KNeighborsRegressor(n_neighbors=5)
 regressor.fit(X_train, y_train)
 
@@ -134,7 +133,6 @@ regressor.fit(X_train, y_train)
 y_pred = regressor.predict(X_test)
 
 #Calculate error
-from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 mae = mean_absolute_error(y_test, y_pred)
 mse = mean_squared_error(y_test, y_pred)
@@ -146,7 +144,6 @@ print(f'rmse: {rmse}')
 
 #Training and Predicting KNN Regression
 #K=10
-from sklearn.neighbors import KNeighborsRegressor
 regressor = KNeighborsRegressor(n_neighbors=10)
 regressor.fit(X_train, y_train)
 
@@ -155,7 +152,6 @@ y_pred = regressor.predict(X_test)
 
 
 #Calculate error
-from sklearn.metrics import mean_absolute_error, mean_squared_error
 
 mae = mean_absolute_error(y_test, y_pred)
 mse = mean_squared_error(y_test, y_pred)
